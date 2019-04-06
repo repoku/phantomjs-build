@@ -1,0 +1,28 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install phantomjs"
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+FILE="phantomjs-2.1.1-linux-x86_64"
+DOWNLOAD_URL="https://github.com/Medium/phantomjs/releases/download/v2.1.1/$FILE.tar.bz2"
+
+echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+
+cd $BUILD_DIR
+mkdir -p $VENDOR_DIR
+cd $VENDOR_DIR
+mkdir -p phantomjs
+cd phantomjs
+wget -q $DOWNLOAD_URL
+tar jxf $FILE.tar.bz2
+mv $FILE/* .
+rm -rf $FILE $FILE.tar.bz2
+
+echo "exporting PATH" | indent
+PROFILE_PATH="$BUILD_DIR/.profile.d/phantomjs.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/phantomjs/bin"' >> $PROFILE_PATH
